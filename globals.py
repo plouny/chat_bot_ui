@@ -3,7 +3,7 @@ import datetime
 from database.adapterDB import AdapterDB
 
 db = AdapterDB()
-
+PLATFORMS = ["tg", "vk"]
 
 def open_json(fp):
     with open(fp, encoding="UTF8") as f:

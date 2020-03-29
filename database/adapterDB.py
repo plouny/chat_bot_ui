@@ -18,8 +18,8 @@ class AdapterDB(DB):
             tables
         )
 
-    def insert_user(self, author_id):
-        self.exe("INSERT INTO users(author_id) VALUES (?)", author_id)
+    def insert_user(self, author_id, author_from):
+        self.exe("INSERT INTO users(author_id, author_from) VALUES (?, ?)", author_id, author_from)
 
     def get_user_id_by_author_id(self, author_id):
         res = self.exe("SELECT id FROM users WHERE author_id=?", author_id).fetchone()

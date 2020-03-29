@@ -1,7 +1,8 @@
 {
   "users": {
     "id": "INTEGER PRIMARY KEY NOT NULL",
-    "author_id": "INEGER NOT NULL"
+    "author_id": "INEGER NOT NULL",
+    "author_from": "STRING NOT NULL"
   },
   "help_requests": {
     "id": "INTEGER PRIMARY KEY NOT NULL",

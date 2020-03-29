@@ -9,6 +9,8 @@ verify_ssl = true
 flask = "*"
 emoji = "*"
 pytelegrambotapi = "*"
+python-socketio = "*"
+aiohttp = "*"
 
 [requires]
 python_version = "3.7"
