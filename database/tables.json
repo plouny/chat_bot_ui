@@ -1,0 +1,12 @@
+{
+  "users": {
+    "id": "INTEGER PRIMARY KEY NOT NULL",
+    "author_id": "INEGER NOT NULL"
+  },
+  "help_requests": {
+    "id": "INTEGER PRIMARY KEY NOT NULL",
+    "user_id": "INTEGER NOT NULL",
+    "question": "STRING NOT NULL",
+    "time_requested": "TIMESTAMP NOT NULL"
+  }
+}
