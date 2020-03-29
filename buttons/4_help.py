@@ -33,30 +33,28 @@ def execute(message, session):
     author = message["author"]
     if session[author]["state"] not in ["help", "help_confirm"]:
         session[author]["state"] = "help"
-        return [text_message("Возникли проблемы? Хотите задать вопрос администрации? Напишите ваш вопрос."
-                             " Он будет отправлен на рассмотрение в чат администрации")]
+        return text_message("Возникли проблемы? Хотите задать вопрос администрации? Напишите ваш вопрос."
+                            " Он будет отправлен на рассмотрение в чат администрации", author)
     elif session[author]["state"] == "help":
         session[author]["state"] = "help_confirm"
         session[author]["help_text"] = message["text"]
-        return [
-            text_message_with_keyboard(
+        return text_message_with_keyboard(
                 "Вы точно уверены что хотите отправить?",
                 ["Да", "Нет"],
+                author,
                 2
             )
-        ]
+
     elif session[author]["state"] == "help_confirm":
         if message["text"] not in ["Да", "Нет"]:
-            return [
-                text_message_with_keyboard(
+            return text_message_with_keyboard(
                     "Вы точно уверены что хотите отправить?",
                     ["Да", "Нет"],
+                    author,
                     2
                 )
-            ]
+
         session[author]["state"] = "menu"
         if message["text"] == "Да":
-            bot.send_message(helpers_channel, f"From {message['from']}, {author}: {message['text']}")
-            return [
-                text_message("Ваше сообщение было успешно доставлено")
-            ]
+            bot.send_message(helper_channel, f"From {message['from']}, {author}: {message['text']}")
+            return text_message("Ваше сообщение было успешно доставлено", author)
