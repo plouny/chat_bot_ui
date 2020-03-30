@@ -1,12 +1,13 @@
 import socketio
 from aiohttp import web
 import os
-from globals import *
+from globals.globals import *
 import sys
 import emoji
 
 # Importing everything from folder buttons
 sys.path.insert(1, "./buttons")
+sys.path.append("./globals")
 buttons = {}
 current_path = os.path.join(os.getcwd(), "buttons")
 for i in os.listdir(current_path):  # Loop through the buttons directory
@@ -48,37 +49,43 @@ async def message(sid, data):
         ["author"], from tg it must be chat.id, from vk - user_id or chat_id
         ["text"], content of a message as a string, deemojized(emojis replaced with ":emoji_name:" )
     """
-    message = data
+    message_obj = data
     try:
-        assert message.get("from", None) in PLATFORMS
-        assert isinstance(message.get("author", None), int)
-        assert isinstance(message.get("text", None), str)
+        assert message_obj.get("from", None) in PLATFORMS
+        assert isinstance(message_obj.get("author", None), int)
+        assert isinstance(message_obj.get("text", None), str)
     except AssertionError:
         await socket.emit("error", "400 JSON file requirements were not satisfied", room=sid)
         return
-    author = message["author"]
+    author = message_obj["author"]
+
     if not db.get_user_id_by_author_id(author):
-        db.insert_user(author, message["from"])
+        db.insert_user(author, message_obj["from"])
     if author not in session:
         session[author] = {
             "state": "nothing"
         }
     if "state" not in session[author]:
         session["state"] = "nothing"
+
+    # Standard answer
     reply = {
         "type": "text",
-        "message": "Команда не найдена. Попробуйте воспользоваться /help"
+        "message": "Команда не найдена. Попробуйте воспользоваться /start"
     }
-    if message["text"] == "Меню" or\
+
+    # Handling Menu
+    if message_obj["text"] == "Меню" or\
             session[author]["state"] == "menu" or\
-            message["text"] == "/start":
+            message_obj["text"] == "/start":
         reply = text_message_with_keyboard("Добро пожаловать в меню",
                                            list(map(lambda x: emoji.emojize(x, use_aliases=True), buttons)), 3)
+
     # Check the execution conditions of buttons
     for name in buttons:
         button = buttons[name]
-        if button.exec_cond(message, session):  # exec_cond() function that returns boolean which means is condition met
-            reply = button.execute(message, session)  # reply is a ready dictionary to reply
+        if button.exec_cond(message_obj, session):  # exec_cond() function that returns boolean which means is condition met
+            reply = button.execute(message_obj, session)  # reply is a ready dictionary to reply
 
     return await socket.emit("message", reply, room=sid)
 

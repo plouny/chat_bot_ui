@@ -1,4 +1,4 @@
-from globals import *
+from globals.globals import *
 from telebot import TeleBot
 
 bot = TeleBot(token=creds["helper_token"])
@@ -17,10 +17,9 @@ def exec_cond(message, session):
 def execute(message, session):
     """
     Execution of giving answer to message
-    returns: !!!LIST!!! of messages
     message must be in format:
         {
-            "user_id": who will receive this message. If None -> return this message to the author
+            "user_id": who will receive this message
             "type": "text"/"keyboard"/"image",
             "message": {
                 "content": text_content,
