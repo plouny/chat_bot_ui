@@ -55,5 +55,9 @@ def execute(message, session):
 
         session[author]["state"] = "menu"
         if message["text"] == "Да":
-            bot.send_message(helper_channel, f"From {message['from']}, {author}: {message['text']}")
+            db.insert_help_request(author, session[author]["help_text"])
+            message_author = author
+            if message["from"] == "tg":
+                message_author = f"@{bot.get_chat(author).username}"
+            bot.send_message(helper_channel, f"From {message['from']}, {message_author}: {session[author]['help_text']}")
             return text_message("Ваше сообщение было успешно доставлено", author)

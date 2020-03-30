@@ -7,7 +7,6 @@ import emoji
 
 # Importing everything from folder buttons
 sys.path.insert(1, "./buttons")
-sys.path.append("./globals")
 buttons = {}
 current_path = os.path.join(os.getcwd(), "buttons")
 for i in os.listdir(current_path):  # Loop through the buttons directory
@@ -41,7 +40,7 @@ def disconnect(sid):
 
 
 @socket.event
-async def message(sid, data):
+async def new_message(sid, data):
     """
     JSON file that represents message sent from user.
     Message must have :
@@ -84,10 +83,11 @@ async def message(sid, data):
     # Check the execution conditions of buttons
     for name in buttons:
         button = buttons[name]
-        if button.exec_cond(message_obj, session):  # exec_cond() function that returns boolean which means is condition met
+        # exec_cond() function that returns boolean which means is condition met
+        if button.exec_cond(message_obj, session):
             reply = button.execute(message_obj, session)  # reply is a ready dictionary to reply
 
-    return await socket.emit("message", reply, room=sid)
+    return await socket.emit("send_message", reply, room=sid)
 
 
 # If main.py called as "main" file
