@@ -8,7 +8,7 @@ import emoji
 
 # Importing everything from folder buttons
 sys.path.insert(1, "./buttons")
-buttons = {}
+buttons_mod = {}
 current_path = os.path.join(os.getcwd(), "buttons")
 for i in os.listdir(current_path):  # Loop through the buttons directory
     if not os.path.isfile(os.path.join(current_path, i)) or\
@@ -17,7 +17,7 @@ for i in os.listdir(current_path):  # Loop through the buttons directory
 
     module_name = i.replace(".py", "")
     button_name = "_".join(module_name.split("_")[1:])  # First element is just a number
-    buttons[button_name] = __import__(module_name)
+    buttons_mod[button_name] = __import__(module_name)
     # Save the module in buttons dictionary. Example: buttons["schedule"] = <module schedule>
     # So we can access functions and vars through buttons dictionary
 
@@ -71,7 +71,9 @@ async def new_message(sid, data):
     # Standard answer
     reply = {
         "type": "text",
-        "message": "Команда не найдена. Попробуйте воспользоваться /start"
+        "message": {
+            "content": "Команда не найдена. Попробуйте воспользоваться /start"
+        }
     }
 
     # Handling Menu
@@ -81,17 +83,25 @@ async def new_message(sid, data):
         reply = text_message_with_keyboard(
             "Добро пожаловать в меню",
             reshape(
-                list(map(lambda x: emoji.emojize(x, use_aliases=True), buttons)),
+                buttons,
                 1
-            )
+            ),
+            author
         )
+        session["state"] = "nothing"
 
     # Check the execution conditions of buttons
-    for name in buttons:
-        button = buttons[name]
-        # exec_cond() function that returns boolean which means is condition met
-        if button.exec_cond(message_obj, session):
-            reply = button.execute(message_obj, session)  # reply is a ready dictionary to reply
+    for name in buttons_mod:
+        button = buttons_mod[name]
+        try:
+            # exec_cond() function that returns boolean which means is condition met
+            if button.exec_cond(message_obj, session):
+                reply = button.execute(message_obj, session)  # reply is a ready dictionary to reply
+        except Exception as e:
+            error_message = e.message if hasattr(e, 'message') else e
+            print("Button", button, error_message)
+            reply = text_message(f"Произошла ошибка в кнопке {button}: \n{error_message}",
+                                 author)
 
     return await socket.emit("send_message", reply, room=sid)
 

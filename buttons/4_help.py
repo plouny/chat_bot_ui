@@ -25,8 +25,7 @@ def execute(message, session):
             "message": {
                 "content": text_content,
                 "image_id": image_id, # Exist only when type == image
-                "keyboard_buttons": ["option1", "option2", ..], # Exist only when type == keyboard
-                "row_width": row_width  # Exist only when type == keyboard
+                "keyboard_buttons": [["option1"], ["option2"], ..], # Exist only when type == keyboard
             }
         }
     """
