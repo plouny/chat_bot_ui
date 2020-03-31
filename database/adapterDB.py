@@ -1,5 +1,5 @@
-from .db import DB
-from globals.globals import *
+from database.db import DB
+from globals.functions import *
 
 
 fp = "database/db.sqlite3"

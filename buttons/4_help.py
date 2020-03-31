@@ -1,4 +1,5 @@
 from globals.globals import *
+from globals.functions import *
 from telebot import TeleBot
 
 bot = TeleBot(token=creds["helper_token"])
@@ -39,18 +40,16 @@ def execute(message, session):
         session[author]["help_text"] = message["text"]
         return text_message_with_keyboard(
                 "Вы точно уверены что хотите отправить?",
-                ["Да", "Нет"],
-                author,
-                2
+                [["Да", "Нет"]],
+                author
             )
 
     elif session[author]["state"] == "help_confirm":
         if message["text"] not in ["Да", "Нет"]:
             return text_message_with_keyboard(
                     "Вы точно уверены что хотите отправить?",
-                    ["Да", "Нет"],
-                    author,
-                    2
+                    [["Да", "Нет"]],
+                    author
                 )
 
         session[author]["state"] = "menu"

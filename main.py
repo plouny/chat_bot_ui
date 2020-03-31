@@ -2,6 +2,7 @@ import socketio
 from aiohttp import web
 import os
 from globals.globals import *
+from globals.functions import *
 import sys
 import emoji
 
@@ -77,8 +78,13 @@ async def new_message(sid, data):
     if message_obj["text"] == "Меню" or\
             session[author]["state"] == "menu" or\
             message_obj["text"] == "/start":
-        reply = text_message_with_keyboard("Добро пожаловать в меню",
-                                           list(map(lambda x: emoji.emojize(x, use_aliases=True), buttons)), 3)
+        reply = text_message_with_keyboard(
+            "Добро пожаловать в меню",
+            reshape(
+                list(map(lambda x: emoji.emojize(x, use_aliases=True), buttons)),
+                1
+            )
+        )
 
     # Check the execution conditions of buttons
     for name in buttons:
