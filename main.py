@@ -70,6 +70,7 @@ async def new_message(sid, data):
 
     # Standard answer
     reply = {
+        "user_id": author,
         "type": "text",
         "message": {
             "content": "Команда не найдена. Попробуйте воспользоваться /start"
@@ -83,7 +84,7 @@ async def new_message(sid, data):
         reply = text_message_with_keyboard(
             "Добро пожаловать в меню",
             reshape(
-                buttons,
+                buttons.values(),
                 1
             ),
             author

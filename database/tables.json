@@ -13,8 +13,7 @@
   "events": {
     "id": "INTEGER PRIMARY KEY NOT NULL",
     "name": "STRING NOT NULL",
-    "description": "STRING",
-    "image_filepath": "STRING"
+    "description": "STRING"
   },
   "calendar_day": {
     "id": "INTEGER PRIMARY KEY NOT NULL",
@@ -28,7 +27,6 @@
     "name": "STRING NOT NULL",
     "time_start": "TIMESTAMP",
     "time_end": "TIMESTAMP",
-    "description": "STRING",
-    "image_filepath": "STRING"
+    "description": "STRING"
   }
 }

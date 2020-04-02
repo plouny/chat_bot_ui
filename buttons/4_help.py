@@ -10,7 +10,7 @@ def exec_cond(message, session):
     Conditions when this exact module is used
     returns: boolean -> True: exec() ; False: pass
     """
-    if message["text"] == buttons[4 - 1] or session[message["author"]]["state"] in ["help", "help_confirm"]:
+    if message["text"] == buttons["help"] or session[message["author"]]["state"] in ["help", "help_confirm"]:
         return True
     return False
 
@@ -57,5 +57,6 @@ def execute(message, session):
             message_author = author
             if message["from"] == "tg":
                 message_author = f"@{bot.get_chat(author).username}"
+            print(helper_channel)
             bot.send_message(helper_channel, f"From {message['from']}, {message_author}: {session[author]['help_text']}")
             return text_message("Ваше сообщение было успешно доставлено", author)

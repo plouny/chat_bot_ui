@@ -1,1 +1,8 @@
-[":receipt:Расписание мероприятия", ":bar_chart:FAQ -часто задаваемые вопросы", ":tear-off_calendar:Календарь", ":SOS_button:Помощь", ":telephone:Контакты", ":flashlight:Интересности"]
+{
+  "schedule": "Расписание мероприятия :receipt:",
+  "faq": "FAQ -часто задаваемые вопросы :bar_chart:",
+  "calendar": "Календарь :tear-off_calendar:",
+  "help": "Помощь :SOS_button:",
+  "contacts": "Контакты :telephone:",
+  "interesting": "Интересности :flashlight:"
+}

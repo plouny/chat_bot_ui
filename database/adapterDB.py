@@ -49,11 +49,11 @@ class AdapterDB(DB):
     def get_event_by_id(self, event_id) -> list:
         return self.exe("SELECT * FROM events WHERE id=?", event_id).fetchone()
 
-    def insert_event(self, name, description=None, image_filepath=None) -> int:
-        return self.exe("INSERT INTO events(name, description, image_filepath) VALUES (?, ?, ?)",
+    def insert_event(self, name, description=None) -> int:
+        return self.exe("INSERT INTO events(name, description) VALUES (?, ?, )",
                         name,
-                        description,
-                        image_filepath).lastrowid
+                        description
+                        ).lastrowid
 
     def insert_calendar_day(self, event_id, day, day_type):
         return self.exe("INSERT INTO calendar_day(event_id, day, day_type) VALUES (?, ?, ?)",
@@ -61,11 +61,11 @@ class AdapterDB(DB):
                         day,
                         day_type).lastrowid
 
-    def insert_sub_event(self, event_id, name, time_start, time_end, description=None, image_filepath=None):
+    def insert_sub_event(self, event_id, name, time_start, time_end, description=None):
         return self.exe(
-            "INSERT INTO sub_events(event_id, name, time_start, time_end, description, image_filepath)"
+            "INSERT INTO sub_events(event_id, name, time_start, time_end, description)"
             "VALUES (?, ?, ?, ?, ?, ?)",
-            event_id, name, time_start, time_end, description, image_filepath
+            event_id, name, time_start, time_end, description
         )
 
     def get_event_name_by_id(self, id) -> str:
@@ -96,3 +96,8 @@ class AdapterDB(DB):
     
     def get_days_of_event_by_id(self, event_id) -> list:
         return list(map(lambda x: x[0], self.exe("SELECT id FROM calendar_day WHERE event_id=?", event_id).fetchall()))
+
+    def get_days_in_month(self, month_start_timestamp, month_end_timestamp) -> list:
+        return list(map(lambda x: x[0], self.exe("SELECT day FROM calendar_day WHERE day >= ? AND day <= ?",
+                                                 month_start_timestamp,
+                                                 month_end_timestamp).fetchall()))

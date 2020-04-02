@@ -4,6 +4,7 @@ from globals.functions import *
 db = AdapterDB()
 PLATFORMS = ["tg", "vk"]
 
-buttons = open_json("buttons/buttons.json")
-creds = open_json("secure/credentials.json")
+buttons: dict = open_json("buttons/buttons.json")
+creds: dict = open_json("secure/credentials.json")
 helper_channel = creds["helper_channel"]
+states: dict = open_json("states.json")
