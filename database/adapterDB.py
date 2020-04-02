@@ -84,12 +84,16 @@ class AdapterDB(DB):
         event_id = self.get_event_name_by_id(name)
         return self.get_sub_events_from_event_id(event_id)
     
-    def get_event_by_day(self, day_timestamp) -> int:
+    def get_event_by_time_stamp(self, day_timestamp) -> int:
         res = self.exe("SELECT event_id FROM calendar_day WHERE day=?", day_timestamp).fetchone()
         if res is None:
             res = [-1]
         return res[0]
-    
+
+    def get_event_by_day(self, year, month, day):
+        day_timestamp = datetime.datetime(year, month, day).timestamp()
+        return self.get_event_by_time_stamp(day_timestamp)
+
     def get_days_of_event(self, name) -> list:
         event_id = self.get_event_id_by_name(name)
         return self.get_days_of_event_by_id(event_id)
