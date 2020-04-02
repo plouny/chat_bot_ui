@@ -101,7 +101,18 @@ class AdapterDB(DB):
     def get_days_of_event_by_id(self, event_id) -> list:
         return list(map(lambda x: x[0], self.exe("SELECT id FROM calendar_day WHERE event_id=?", event_id).fetchall()))
 
-    def get_days_in_month(self, month_start_timestamp, month_end_timestamp) -> list:
-        return list(map(lambda x: x[0], self.exe("SELECT day FROM calendar_day WHERE day >= ? AND day <= ?",
+    def get_days_in_month_by_timestamp(self, month_start_timestamp, month_end_timestamp) -> list:
+        return list(map(lambda x: x[0], self.exe("SELECT day FROM calendar_day WHERE day >= ? AND day < ?",
                                                  month_start_timestamp,
                                                  month_end_timestamp).fetchall()))
+
+    def get_days_in_month(self, month):
+        now = datetime.datetime.now()
+        month_start = datetime.datetime(now.year, month, 0)
+        month_end = datetime.datetime(now.year, month + 1, 0)
+        days_timestamp = self.get_days_in_month_by_timestamp(
+            month_start,
+            month_end
+        )
+        timezone = datetime.timezone(datetime.timedelta(hours=3))
+        return list(map(lambda x: datetime.datetime.fromtimestamp(x, timezone).day, days_timestamp))
