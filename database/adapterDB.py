@@ -6,6 +6,17 @@ fp = "database/db.sqlite3"
 tables = open_json("./database/tables.json")
 
 
+def data_to_dict(table, data, many=False):
+    if many:
+        return [{
+            k: v for k, v in zip(tables[table], i)
+        } for i in data]
+    else:
+        return {
+            k: v for k, v in zip(tables[table], data)
+        }
+
+
 class AdapterDB(DB):
     def __init__(self):
         super().__init__(
@@ -39,15 +50,16 @@ class AdapterDB(DB):
         user_id = self.get_user_id_by_author_id(author_id)
         return self.insert_help_request_by_user_id(user_id, question)
 
-    def get_help_requests_by_user_id(self, user_id) -> list:
-        return self.exe("SELECT * FROM help_requests WHERE user_id=?", user_id).fetchall()
+    def get_help_requests_by_user_id(self, user_id) -> dict:
+        return data_to_dict("help_requests",
+                            self.exe("SELECT * FROM help_requests WHERE user_id=?", user_id).fetchall(), many=True)
 
-    def get_help_requests(self, author_id) -> list:
+    def get_help_requests(self, author_id) -> dict:
         user_id = self.get_user_id_by_author_id(author_id)
         return self.get_help_requests_by_user_id(user_id)
 
-    def get_event_by_id(self, event_id) -> list:
-        return self.exe("SELECT * FROM events WHERE id=?", event_id).fetchone()
+    def get_event_by_id(self, event_id) -> dict:
+        return data_to_dict("events", self.exe("SELECT * FROM events WHERE id=?", event_id).fetchone())
 
     def insert_event(self, name, description=None) -> int:
         return self.exe("INSERT INTO events(name, description) VALUES (?, ?, )",
@@ -75,7 +87,7 @@ class AdapterDB(DB):
         return res[0]
 
     def get_event_id_by_name(self, name) -> list:
-        return self.exe("SELECT * FROM events WHERE name=?", name).fetchone()
+        return data_to_dict("events", self.exe("SELECT * FROM events WHERE name=?", name).fetchone())
 
     def get_sub_events_from_event_id(self, event_id) -> list:
         return list(map(lambda x: x[0], self.exe("SELECT id FROM sub_events WHERE event_id=?", event_id).fetchall()))
@@ -84,13 +96,11 @@ class AdapterDB(DB):
         event_id = self.get_event_name_by_id(name)
         return self.get_sub_events_from_event_id(event_id)
     
-    def get_event_by_time_stamp(self, day_timestamp) -> int:
-        res = self.exe("SELECT event_id FROM calendar_day WHERE day=?", day_timestamp).fetchone()
-        if res is None:
-            res = [-1]
-        return res[0]
+    def get_events_by_time_stamp(self, day_timestamp) -> list:
+        return list(map(lambda x: x[0],
+                        self.exe("SELECT event_id FROM calendar_day WHERE day=?", day_timestamp).fetchall()))
 
-    def get_event_by_day(self, year, month, day):
+    def get_events_by_day(self, year, month, day) -> list:
         day_timestamp = datetime.datetime(year, month, day).timestamp()
         return self.get_event_by_time_stamp(day_timestamp)
 
@@ -106,10 +116,9 @@ class AdapterDB(DB):
                                                  month_start_timestamp,
                                                  month_end_timestamp).fetchall()))
 
-    def get_days_in_month(self, month):
-        now = datetime.datetime.now()
-        month_start = datetime.datetime(now.year, month, 0)
-        month_end = datetime.datetime(now.year, month + 1, 0)
+    def get_days_in_month(self, year, month):
+        month_start = datetime.datetime(year, month, 0)
+        month_end = datetime.datetime(year, month + 1, 0)
         days_timestamp = self.get_days_in_month_by_timestamp(
             month_start,
             month_end

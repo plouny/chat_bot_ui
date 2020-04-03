@@ -1,24 +1,29 @@
+from globals.functions import *
+from globals.globals import *
+
 
 def exec_cond(message, session):
-    """ TODO
-    Conditions when this exact module is used
-    returns: boolean -> True: exec() ; False: pass
-    """
+    return message["text"].strip() in ['contacts', buttons["contacts"]]
 
 
 def execute(message, session):
-    """ TODO
+    """
     Execution of giving answer to message
     returns: !!!LIST!!! of messages
     message must be in format:
         {
-            "user_id": who will receive this message. If None -> return this message to the author
             "type": "text"/"keyboard"/"image",
             "message": {
-                "content": text_content,
-                "image_id": image_id, # Exist only when type == image
-                "keyboard_buttons": ["option1", "option2", ..], # Exist only when type == keyboard
+                "content": text_content/ ["option1", "option2", ..]/image_id,
                 "row_width": row_width  # Exist only when type == keyboard
             }
         }
     """
+    text = (':phone: Контакты \n' +
+            ':house: Наш адрес: Университетская ул., 1, Иннополис\n' +
+            ':telephone_receiver: Наш телефон: +7(843)203-92-53\n' +
+            ':globe_with_meridians: Наш сайт: university.innopolis.ru\n' +
+            ':email:Наш email: university@innopolis.ru\n' +
+            ':clock9:Наш режим работы: пн-пт 9:00–18:00')
+
+    return text_message(text, message["author"])

@@ -12,7 +12,7 @@ buttons_mod = {}
 current_path = os.path.join(os.getcwd(), "buttons")
 for i in os.listdir(current_path):  # Loop through the buttons directory
     if not os.path.isfile(os.path.join(current_path, i)) or\
-            i == "buttons.json":  # if file is not file: another directory. Continue
+            ".py" not in i:  # if file is not file: another directory. Continue
         continue
 
     module_name = i.replace(".py", "")
@@ -21,9 +21,11 @@ for i in os.listdir(current_path):  # Loop through the buttons directory
     # Save the module in buttons dictionary. Example: buttons["schedule"] = <module schedule>
     # So we can access functions and vars through buttons dictionary
 
+
 socket = socketio.AsyncServer()
 app = web.Application()
 socket.attach(app)
+PLATFORMS = ["tg", "vk"]
 # Get environmental variable PORT if exists, perhaps use 5000
 PORT = os.getenv("PORT", 5000)
 
